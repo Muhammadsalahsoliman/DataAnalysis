@@ -8,7 +8,7 @@ CITY_DATA = { 'chicago': 'chicago.csv',
 cities = ['chicago','new york city', 'washington']
 months = ['all', 'january', 'february','march', 'april', 'may', 'june' ]
 days = ['all','monday', 'tuesday', 'wednesday','thursday', 'friday', 'saturday', 'sunday' ]
-
+yes_no_answer = ['yes','no']
 def get_filters():
     """
     Asks user to specify a city, month, and day to analyze.
@@ -22,23 +22,23 @@ def get_filters():
 
     # get user input for city (chicago, new york city, washington). HINT: Use a while loop to handle invalid inputs
     global city, month, day
-    city = input("Which city would you like to analyze \n(chicago), (new york city) or (washington): ")
+    city = input("Which city would you like to analyze \n(chicago), (new york city) or (washington): ").lower()
 
     while city not in  cities :
-        city = input("Wrong entry - please re-enter the city you would like to analyze: ")
+        city = input("Wrong entry - please re-enter the city you would like to analyze: ").lower()
 
 
     # get user input for month (all, january, february, ... , june)
-    month = input("Which month would you like to analyze \n(all, january, february, ... , june): ")
+    month = input("Which month would you like to analyze \n(all, january, february, ... , june): ").lower()
 
     while month not in months :
-        month = input("Wrong entry - please re-enter the month you would like to analyze: ")
+        month = input("Wrong entry - please re-enter the month you would like to analyze: ").lower()
 
     # get user input for day of week (all, monday, tuesday, ... sunday)
-    day = input("Which day would you like to analyze \n(all, monday, tuesday, ... sunday): ")
+    day = input("Which day would you like to analyze \n(all, monday, tuesday, ... sunday): ").lower()
 
     while day not in days :
-        day = input("Wrong entry - please re-enter the day you would like to analyze: ")
+        day = input("Wrong entry - please re-enter the day you would like to analyze: ").lower()
 
     print('-'*40)
 
@@ -73,6 +73,29 @@ def load_data(city, month, day):
 
     return df
 
+def display_raw_data(df):
+    """
+    Asks the users if they would like to view raw Data
+
+    args:
+        DataFrame
+    Returns
+        1st five rows of the raw Data
+    """
+    i = 0
+    raw = input('\nWould you view raw data? Enter yes or no.\n').lower()
+    while raw not in yes_no_answer :
+        raw = input("Wrong entry - Please Enter yes or no: ").lower()
+
+    pd.set_option('display.max_rows',200)
+
+    while True:
+        if raw == 'no':
+            break
+
+        print(df.loc[[i, i+1, i+2, i+3, i+4]]) # TO DO: appropriately subset/slice your dataframe to display next five rows
+        raw = input('Would you like to see more raw data: ' ).lower()
+        i += 5
 
 def time_stats(df):
     """Displays statistics on the most frequent times of travel."""
@@ -99,7 +122,7 @@ def time_stats(df):
     most_hour = df['Hour'].mode()[0]
     print('The most common hour was: {}'.format(most_hour))
 
-    print("\nThis took %s seconds." % (time.time() - start_time))
+    print("\nThis took %s seconds." % (time.time() - round((time.time() -start_time),2)))
     print('-'*40)
 
 
@@ -122,7 +145,7 @@ def station_stats(df):
     most_combination = df['startend'].mode()[0]
     print('The most frequent combination of start station and end station trip was: {}'.format(most_combination))
 
-    print("\nThis took %s seconds." % (time.time() - start_time))
+    print("\nThis took %s seconds." % (time.time() - round((time.time() -start_time),2)))
     print('-'*40)
 
 
@@ -133,12 +156,12 @@ def trip_duration_stats(df):
     start_time = time.time()
 
     # display total travel time
-    total_time = df['Trip Duration'].sum()
+    total_time = round(df['Trip Duration'].sum(),2)
     print('Total Travel Time = {},'.format(total_time))
     # display mean travel time
-    mean_time = df['Trip Duration'].mean()
+    mean_time = round(df['Trip Duration'].mean(),1)
     print('Mean Travel Time = {},'.format(mean_time))
-    print("\nThis took %s seconds." % (time.time() - start_time))
+    print("\nThis took %s seconds." % (time.time() - round((time.time() -start_time),2)))
     print('-'*40)
 
 
@@ -153,21 +176,21 @@ def user_stats(df):
     print('Users\' Types =\n {},'.format(countusertype))
 
     # Display counts of gender
-    if city == 'chicago' :
+    if city == 'washington' :
+        print('there is no Gender and Year of Birth Data for the city of {}'.format(city))
+
+    else:
         countgender = df['Gender'].value_counts()
         print('Users\' Gender =\n {},'.format(countgender))
 
     # Display earliest, most recent, and most common year of birth
 
-        oldest = df['Birth Year'].max()
-        youngest = df['Birth Year'].min()
-        most_year = df['Birth Year'].mode()
+        oldest = int(df['Birth Year'].max())
+        youngest = int(df['Birth Year'].min())
+        most_year = int(df['Birth Year'].mode())
         print('The earliest year of birth was: {}\n The most recent year of birth was: {}\n The most common year of birth was = {},'.format(oldest, youngest, most_year))
 
-    else :
-        print('there is no Gender and Year of Birth Data for the city of {}'.format(city))
-
-    print("\nThis took %s seconds." % (time.time() - start_time))
+    print("\nThis took %s seconds." %  round((time.time() -start_time),2))
     print('-'*40)
 
 
@@ -180,8 +203,11 @@ def main():
         station_stats(df)
         trip_duration_stats(df)
         user_stats(df)
+        display_raw_data(df)
 
-        restart = input('\nWould you like to restart? Enter yes or no.\n')
+        restart = input('\nWould you like to restart? Enter yes or no.\n').lower()
+        while restart not in yes_no_answer :
+            restart = input("Wrong entry - Please Enter yes or no: ").lower()
         if restart.lower() != 'yes':
             break
 
