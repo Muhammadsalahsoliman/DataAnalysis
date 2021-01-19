@@ -80,7 +80,7 @@ def display_raw_data(df):
     args:
         DataFrame
     Returns
-        1st five rows of the raw Data, then next 5, then the five after as per user request
+        1st five rows of the raw Data, then the next five, then the five after as per the user's request
     """
     i = 0
     raw = input('\nWould you view raw data? Enter yes or no.\n').lower()
@@ -93,7 +93,7 @@ def display_raw_data(df):
         if raw == 'no':
             break
 
-        print(df.loc[[i, i+1, i+2, i+3, i+4]]) # TO DO: appropriately subset/slice your dataframe to display next five rows
+        print(df.iloc[[i, i+1, i+2, i+3, i+4]]) # TO DO: appropriately subset/slice your dataframe to display next five rows
         raw = input('Would you like to see more raw data: ' ).lower()
         i += 5
 
