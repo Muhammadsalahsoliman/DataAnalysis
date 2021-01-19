@@ -80,7 +80,7 @@ def display_raw_data(df):
     args:
         DataFrame
     Returns
-        1st five rows of the raw Data
+        1st five rows of the raw Data, then next 5, then the five after as per user request
     """
     i = 0
     raw = input('\nWould you view raw data? Enter yes or no.\n').lower()
